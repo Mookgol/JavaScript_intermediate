@@ -1,0 +1,190 @@
+Week 3 intro to Node JS
+What is Node Js.
+•	Node allows us to run JavaScript on the sever side as well directly on computers.
+•	Node js is a program written in C++ and that wraps the V8 engine so this v8 engine that’s in bowsers also lives inside node.
+•	By installing node js on our computer it can take our JavaScript it can run it though the v8 compiler that it has inside it and it compiles our JavaScript into machine code so that we can run JavaScript directly on a compute or sever not just in the browser.
+•	Node is more than just a wrapper for the v8 engine. it also hooks into the v8 engine and mor functionality to JavaScript so that when we are using node to compile and run JavaScript, we can us all this extra functionality in our JavaScript code which includes being able to read and write files on a computer or to connect to a database.
+•	What is Node JS?
+Is an open-source server environment.
+•	How is Node JS initiated on a computer?
+Though the command line interface.
+•	Why do we use Node JS?
+Node Js is asynchronous.
+•	What can Node JS do?
+Node js can send dynamic content.
+Node js contains some tsk that can be executed on certain events e.g someone trying to access a port o the server. 
+•	What is a module in Node JS the same as in JavaScript?
+Libraries 
+•	What is NPM?
+Node js package manager
+•	What is contained in a Node JS Package?
+A package in Node.js contains all files you need for a module.
+
+
+How does Node.js handles a file
+
+•	Sends the task to the computers file system.
+•	Ready to handle the next request.
+•	When the file system has opened and read the file, the server returns the content to the client.
+•	It eliminates the waiting and simply continues with the next request.
+•	Runs single-threaded, non-blocking asynchronous programming, which is vey memory efficient.
+
+What Can Node.js Do?
+•	Node.js can generate dynamic page content.
+•	Node.js can create, open, read, write, delete, and close files on the server.
+•	Node.js can collect form data.
+•	Node.js can add, delete, modify data in your database.
+
+
+
+What is a Node.js File?
+•	Node.js files contain tasks that will be executed on certain events.
+•	A typical event is someone trying to access a port on the server.
+•	Node.js files must be initiated on the server before having any effect.
+•	Node.js files have extension ".js"
+
+Command Line Interface
+Node.js files must be initiated in the "Command Line Interface" program of your computer.
+
+How to open the command line interface on your computer depends on the operating system. For Windows users, press the start button and look for "Command Prompt", or simply write "cmd" in the search field.
+
+Navigate to the folder that contains the file "myfirst.js", the command line interface window should look something like this:
+
+C:\Users\Your Name>_
+
+
+Initiate the Node.js File
+The file you have just created must be initiated by Node.js before any action can take place.
+
+Start your command line interface, write node myfirst.js and hit enter:
+
+Initiate "myfirst.js":
+
+C:\Users\Your Name>node myfirst.js
+Now, your computer works as a server!
+
+If anyone tries to access your computer on port 8080, they will get a "Hello World!" message in return!
+
+Start your internet browser, and type in the address: http://localhost:8080
+
+
+
+Node.js in JavaScript:
+
+•	Node.js is an open-source runtime environment that allows developers to run JavaScript code outside of a web browser. 
+•	It is built on the V8 JavaScript engine by Google and is designed for building scalable network applications. 
+
+Here's an explanation of Node.js 
+1. Server-Side JavaScript:
+
+Node.js enables the execution of JavaScript on the server side, allowing developers to write server-side applications using the same language as their client-side code.
+Example:
+
+javascript
+const http = require('http');
+
+const server = http.createServer((req, res) => {
+  res.writeHead(200, { 'Content-Type': 'text/plain' });
+  res.end('Hello, Node.js!');
+});
+
+server.listen(8080, () => {
+  console.log('Server is running on port 8080');
+});
+Save to grepper
+2. Non-Blocking and Asynchronous:
+
+Node.js uses an event-driven, non-blocking I/O model, which allows it to handle many simultaneous connections efficiently without blocking the execution of other code.
+Example:
+
+javascript
+const fs = require('fs');
+
+fs.readFile('file.txt', 'utf8', (err, data) => {
+  if (err) throw err;
+  console.log(data);
+});
+Save to grepper
+3. Package Ecosystem (npm):
+
+Node.js comes with npm (Node Package Manager), a vast ecosystem of pre-built libraries and packages, making it easy to incorporate third-party modules into your applications.
+Example:
+
+ruby
+$ npm install lodash
+Save to grepper
+javascript
+const _ = require('lodash');
+const numbers = [1, 2, 3, 4, 5];
+const sum = _.sum(numbers);
+console.log(`Sum: ${sum}`);
+Save to grepper
+4. High Performance:
+
+Node.js is known for its high performance due to its non-blocking nature and efficient event loop, making it suitable for handling real-time applications like chat applications, gaming servers, and more.
+Example:
+Building a real-time chat application using Node.js and WebSocket.
+
+5. Cross-Platform:
+
+Node.js is cross-platform, which means it can run on various operating systems such as Windows, macOS, and Linux, providing flexibility for developers.
+6. Single Language Stack:
+
+Node.js allows developers to use JavaScript for both the server and client sides of their applications, simplifying the development process and reducing context-switching.
+Example:
+Sharing code and validation logic between the server and client.
+
+7. Microservices and APIs:
+
+Node.js is often used to build lightweight microservices and RESTful APIs due to its speed and efficiency in handling HTTP requests.
+Example:
+Creating a RESTful API for a web or mobile application.
+
+Node.js is a powerful runtime environment that brings JavaScript to the server side, allowing developers to build scalable, non-blocking, and high-performance applications with a vast ecosystem of packages. It's commonly used for web servers, real-time applications, APIs, and microservices, offering a unified language stack for full-stack development.
+
+Day 3
+•	How Node JS can be used to create fun and games
+•	How to configure the game environment
+•	How to enable ES6 features and allow you to bundle your game
+
+This code appears to be part of a game or simulation and is used to control the angular velocity (rate of rotation) of an object, presumably a sprite or a game character, based on certain input conditions. Let's break down the code step by step:
+
+javascript
+if (isDown(game, KEYS.A)) {
+  this.sprite.body.angularVelocity = -5 * (this.speed / 1000);
+}
+Save to grepper
+The if statement checks if a condition is met. In this case, it's checking if the "A" key is being pressed. The isDown function is used for this purpose, and it seems to be a custom function that checks whether a particular key is pressed. The KEYS.A might be a constant or variable representing the "A" key.
+
+If the "A" key is pressed, the code inside the curly braces is executed. It sets the angular velocity of the this.sprite.body to a negative value, which will make the object rotate counterclockwise. The specific angular velocity is calculated as -5 * (this.speed / 1000). The this.speed value seems to be a parameter that determines the speed of rotation, and it's divided by 1000 to convert it into seconds.
+
+Next, we have an else if statement:
+
+javascript
+else if (isDown(game, KEYS.D)) {
+  this.sprite.body.angularVelocity = 5 * (this.speed / 1000);
+}
+Save to grepper
+This else if checks if the "D" key is being pressed. If the "A" key wasn't pressed (the first condition was not met) but the "D" key is pressed, then this code block is executed.
+
+It sets the angular velocity of this.sprite.body to a positive value, which will make the object rotate clockwise. The angular velocity calculation is the same as in the first block but with a positive value.
+
+Finally, we have the else block:
+
+javascript
+else {
+  this.sprite.body.angularVelocity = 0;
+}
+Save to grepper
+If neither the "A" key nor the "D" key is being pressed, this block is executed. It sets the angular velocity to 0, which means that the object will not rotate.
+this code snippet is used to control the rotation of an object in a game or simulation based on user input. When the "A" key is pressed, it rotates counterclockwise; when the "D" key is pressed, it rotates clockwise, and when neither key is pressed, the rotation stops (angular velocity is set to 0). The speed of rotation is determined by the this.
+speed value, which is converted into seconds by dividing by 1000.
+
+
+
+
+
+
+
+
+
