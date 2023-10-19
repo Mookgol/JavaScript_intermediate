@@ -1,0 +1,1285 @@
+WEEK 4  
+
+Intermediate Javascript     Day 1 
+ 
+
+Building-App-Component-JavaScript  
+
+ 
+
+Table of Contents - [Installing and Building App components] 
+
+Installing-and-Building-App-components 
+
+ [Building the Index Page](#Building-the-Index-Page) - [Building the Chat component](#Building-the-Chat-component) - [Displaying the Chat message](#Displaying-the-Chat-message) 
+
+Follow the instructions below to build a chatapp. 
+
+mkdir myGame 
+
+cd myGame 
+
+ 
+ 
+
+npx create-next-app 
+
+#Project name in the pop up as: ‘realtime-chat-app’ 
+
+ 
+ 
+
+cd realtime-chat-app   
+
+ 
+ 
+
+# Initiate a new package and install app dependencies in the new directory 
+
+ 
+ 
+
+npm init -y   
+
+npm install react react-dom next pusher pusher-js sentiment  
+
+npm install express body-parser cors dotenv axios  
+
+ 
+ 
+
+npm install 
+
+ 
+ 
+
+Sign in to pusher 
+
+Select “chat-app-stagging” 
+
+Select “getting started” on the left nav 
+
+ 
+ 
+
+STEP 1 
+
+Select “javascript” in the dropdown 
+
+And copy the index.html code and paste it into: 
+
+realtime-chat-app/public/index.html (create it if it’s not there) 
+
+  
+
+ 
+
+STEP 2 
+
+Select “node js” in the dropdown and copy the code into the  
+
+Index.js file in src/index.js 
+
+ 
+ 
+
+Create a .env file 
+
+And paste 
+
+PUSHER_APP_ID=YOUR_APP_ID 
+
+   PUSHER_APP_KEY=YOUR_APP_KEY 
+
+   PUSHER_APP_SECRET=YOUR_APP_SECRET 
+
+   PUSHER_APP_CLUSTER=YOUR_APP_CLUSTER 
+
+ 
+ 
+
+Make sure substitute your YOUR_APP_ID with your actual values(see STEP 2 on pusher.com) 
+
+ 
+ 
+
+Create next.config.js file into the root of the project : realtime-chat-app/ 
+
+Paste this code: 
+
+ 
+ 
+
+/* next.config.js */ 
+
+ 
+ 
+
+const webpack = require('webpack'); 
+
+ 
+ 
+
+require('dotenv').config(); 
+
+ 
+ 
+
+module.exports = { 
+
+ 
+ 
+
+  webpack: config => { 
+
+ 
+ 
+
+    const env = Object.keys(process.env).reduce((acc, curr) => { 
+
+ 
+ 
+
+      acc[`process.env.${curr}`] = JSON.stringify(process.env[curr]); 
+
+ 
+ 
+
+      return acc; 
+
+ 
+ 
+
+    }, {}); 
+
+ 
+ 
+
+    config.plugins.push(new webpack.DefinePlugin(env));   
+
+ 
+ 
+
+    return config; 
+
+ 
+ 
+
+  } 
+
+ 
+ 
+
+};  
+
+ 
+ 
+
+Create server.js in the root of the project and paste: 
+
+ 
+ 
+
+/* server.js */ 
+
+ 
+ 
+
+const cors = require('cors'); 
+
+ 
+ 
+
+const next = require('next'); 
+
+ 
+ 
+
+const Pusher = require('pusher'); 
+
+ 
+ 
+
+const express = require('express'); 
+
+ 
+ 
+
+const bodyParser = require('body-parser'); 
+
+ 
+ 
+
+const dotenv = require('dotenv').config(); 
+
+ 
+ 
+
+const Sentiment = require('sentiment'); 
+
+ 
+ 
+
+const dev = process.env.NODE_ENV !== 'production'; 
+
+ 
+ 
+
+const port = process.env.PORT || 3000; 
+
+ 
+ 
+
+const app = next({ dev }); 
+
+ 
+ 
+
+const handler = app.getRequestHandler(); 
+
+ 
+ 
+
+const sentiment = new Sentiment(); 
+
+ 
+ 
+
+// Ensure that your pusher credentials are properly set in the .env file 
+
+ 
+ 
+
+// Using the specified variables 
+
+ 
+ 
+
+const pusher = new Pusher({ 
+
+ 
+ 
+
+  appId: process.env.PUSHER_APP_ID, 
+
+ 
+ 
+
+  key: process.env.PUSHER_APP_KEY, 
+
+ 
+ 
+
+  secret: process.env.PUSHER_APP_SECRET, 
+
+ 
+ 
+
+  cluster: process.env.PUSHER_APP_CLUSTER, 
+
+ 
+ 
+
+  useTLS: true, 
+
+ 
+ 
+
+}); 
+
+ 
+ 
+
+app.prepare() 
+
+ 
+ 
+
+  .then(() => { 
+
+ 
+ 
+
+    const server = express(); 
+
+ 
+ 
+
+    server.use(cors()); 
+
+ 
+ 
+
+    server.use(bodyParser.json()); 
+ 
+
+    server.use(bodyParser.urlencoded({ extended: true })); 
+
+ 
+ 
+
+    server.get('*', (req, res) => { 
+
+ 
+ 
+
+      return handler(req, res); 
+
+ 
+ 
+
+    }); 
+
+ 
+ 
+
+    server.listen(port, err => { 
+
+ 
+ 
+
+      if (err) throw err; 
+
+ 
+ 
+
+      console.log(`Server is ready and listening on http://localhost:${port}`); 
+
+ 
+ 
+ 
+
+    }); 
+
+ 
+ 
+
+  }) 
+
+ 
+ 
+
+  .catch(ex => { 
+
+ 
+ 
+
+    console.error(ex.stack); 
+
+ 
+ 
+
+    process.exit(1); 
+
+ 
+ 
+
+  }); 
+
+ 
+ 
+
+In package.json in th root 
+
+Edit the file and add:  
+
+"scripts": { 
+
+     "dev": "node server.js", 
+
+     "build": "next build", 
+
+     "start": "NODE_ENV=production node server.js" 
+
+   } 
+
+ 
+
+Add the 3 new things in the scripts section, carefully 
+
+ 
+ 
+
+To build the project 
+
+npm run build 
+
+If it fails because of missing dependancies then run : 
+
+npm install tailwindcss 
+
+npm install autoprefixer 
+
+ 
+ 
+
+Then run npm start 
+
+It will the page.tsx in  realtime-chat-app/src/app/page.tsx 
+
+ 
+ 
+
+ 
+ 
+
+Activity 2  
+
+ 
+ 
+
+Rename these folders (old-layout and old-pages.tsx ) 
+
+ 
+ 
+
+Create new folder 
+
+Components   then the file inside layout.js 
+
+Copy and paste code 
+
+import React, { Fragment } from 'react'; 
+
+ 
+ 
+
+import Head from 'next/head'; 
+
+ 
+ 
+
+const Layout = props => ( 
+
+ 
+ 
+
+  <Fragment> 
+
+ 
+ 
+
+    <Head> 
+
+ 
+ 
+
+      <meta charSet="utf-8" /> 
+
+ 
+ 
+
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" /> 
+
+ 
+ 
+
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossOrigin="anonymous" /> 
+
+ 
+ 
+
+      <title>{props.pageTitle || 'Realtime Chat'}</title> 
+
+ 
+ 
+
+    </Head> 
+
+ 
+ 
+
+    {props.children} 
+
+ 
+ 
+
+  </Fragment> 
+
+ 
+ 
+
+); 
+
+ 
+ 
+
+export default Layout; 
+
+    
+
+ 
+ 
+
+Create new folder  
+
+Pages then a file inside index.js 
+
+Paste code below (this line has been fixed  from wisyourname?  To:  <span style={{ color: '#999' }}>What's your name?</span> ) 
+
+ 
+ 
+
+ 
+ 
+
+import React, { Component } from 'react'; 
+
+ 
+ 
+
+import Layout from '../components/layout';   
+
+ 
+ 
+
+class IndexPage extends Component { 
+
+ 
+ 
+
+  state = { user: null }     
+
+ 
+ 
+
+  handleKeyUp = evt => { 
+
+ 
+ 
+
+    if (evt.keyCode === 13) { 
+
+ 
+ 
+
+      const user =  evt.target.value; 
+
+ 
+ 
+
+      this.setState({ user }); 
+
+ 
+ 
+
+    } 
+
+ 
+ 
+
+  } 
+
+ 
+ 
+
+  render() { 
+
+ 
+ 
+
+    const { user } = this.state;     
+
+ 
+ 
+
+    const nameInputStyles = { 
+
+ 
+ 
+
+      background: 'transparent', 
+
+ 
+ 
+
+      color: '#999', 
+
+ 
+ 
+
+      border: 0, 
+
+ 
+ 
+
+      borderBottom: '1px solid #666', 
+
+ 
+ 
+
+      borderRadius: 0, 
+
+ 
+ 
+
+      fontSize: '3rem', 
+
+ 
+ 
+
+      fontWeight: 500, 
+
+ 
+ 
+
+      boxShadow: 'none !important' 
+
+ 
+ 
+
+    };       
+
+ 
+ 
+
+    return ( 
+
+ 
+ 
+
+      <Layout pageTitle="Realtime Chat">         
+
+ 
+ 
+
+        <main className="container-fluid position-absolute h-100 bg-dark">           
+
+ 
+ 
+
+          <div className="row position-absolute w-100 h-100">             
+
+ 
+ 
+
+            <section className="col-md-8 d-flex flex-row flex-wrap align-items-center align-content-center px-5"> 
+
+ 
+ 
+
+              <div className="px-5 mx-5">                 
+
+ 
+ 
+
+                <span className="d-block w-100 h1 text-light" style={{marginTop: -50}}> 
+
+ 
+ 
+
+                { 
+
+                    user ? ( 
+
+                      <span> 
+
+                   <span style={{ color: '#999' }}>Hello!</span> {user} 
+
+                     </span> 
+
+                     ) : ( 
+
+                    <span style={{ color: '#999' }}>What's your name?</span> 
+
+                       ) 
+
+                      } 
+
+                </span>                   
+
+ 
+ 
+
+                { !user && <input type="text" className="form-control mt-3 px-3 py-2" onKeyUp={this.handleKeyUp} autoComplete="off" style={nameInputStyles} /> }                   
+
+ 
+ 
+
+              </div> 
+
+ 
+ 
+
+            </section> 
+
+ 
+ 
+
+            <section className="col-md-4 position-relative d-flex flex-wrap h-100 align-items-start align-content-between bg-white px-0"></section>               
+
+ 
+ 
+
+          </div>          
+
+ 
+ 
+
+        </main>           
+
+ 
+ 
+
+      </Layout> 
+
+ 
+ 
+
+    ); 
+
+ 
+ 
+
+  } 
+
+ 
+ 
+
+} 
+
+ 
+ 
+
+export default () => ( 
+
+ 
+ 
+
+  <IndexPage /> 
+
+ 
+ 
+
+); 
+
+ 
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+Day 2 
+
+ 
+
+Building the index page 
+
+ 
+
+ in intermediate JavaScript typically involves creating the main entry point for a web application or website.  
+
+ 
+
+Here's a summary of the key steps and concepts involved: 
+
+HTML Structure: Design the HTML structure of the index page, including headers, navigation menus, content sections, and footer. Organize the layout and elements for user-friendly navigation. 
+
+CSS Styling: Apply Cascading Style Sheets (CSS) to control the visual presentation of the index page. Use CSS rules to define fonts, colors, layouts, and responsive design for different screen sizes. 
+
+JavaScript Integration: Incorporate JavaScript to enhance interactivity and functionality. You can use JavaScript to create dynamic content, handle user input, and interact with external data sources or APIs. 
+
+Event Handling: Implement event listeners to respond to user interactions, such as clicks, form submissions, or mouse movements. JavaScript events allow you to trigger specific actions and behavior. 
+
+Asynchronous Operations: Use JavaScript to manage asynchronous tasks like fetching data from a server, performing calculations, or loading resources. Promises or async/await can simplify handling async operations. 
+
+Data Binding: Connect data to the index page by rendering dynamic content based on data from local variables, databases, or external APIs. JavaScript frameworks like React or Vue can simplify data binding. 
+
+Routing (Optional): For single-page applications (SPAs), implement client-side routing to navigate between different views or sections without full page reloads. Libraries like React Router or Vue Router can help. 
+
+Form Handling: Manage forms on the index page, validate user input, and submit data to a server for processing. JavaScript can enhance the user experience by providing real-time feedback. 
+
+Third-party Libraries: Utilize third-party JavaScript libraries and frameworks as needed for specific features or functionalities, such as charting libraries, animation frameworks, or date pickers. 
+
+Cross-browser Compatibility: Ensure that the index page functions correctly on various web browsers, including handling browser-specific quirks and issues. 
+
+Performance Optimization: Optimize the index page for performance by minimizing page load times, reducing HTTP requests, and compressing assets. Techniques like lazy loading and code splitting can be helpful. 
+
+Security: Implement security measures to protect the index page and its users. This includes input validation, data sanitization, and protection against common web vulnerabilities. 
+
+Testing and Debugging: Conduct thorough testing to identify and resolve bugs, compatibility issues, and usability problems. Use browser developer tools for debugging. 
+
+Documentation: Document your code, including comments, for ease of maintenance and collaboration with other developers. 
+
+Deployment: Deploy the index page to a web server or hosting platform to make it accessible to users on the internet. 
+
+ 
+
+ 
+
+Building the index page is a foundational step in web development, serving as the user's entry point to your web application or site. It requires a combination of HTML, CSS, and JavaScript skills, along with attention to design, functionality, and performance considerations. 
+
+Regenerate 
+
+ 
+ 
+
+——————————————————— 
+
+npm install axios 
+
+ 
+ 
+
+Sign up for the OpenAI API and get your API key: https://beta.openai.com/signup/ 
+
+>personal > view API Keys 
+
+Create new api key( call it anything) 
+
+Key: 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 
+
+Create Chatbot.js in pages/ (directory) 
+
+Add this code 
+
+In the place of YOUR_OPENAI_API_KEY insert your api key 
+
+ 
+ 
+
+import React, { useState } from 'react'; 
+
+import axios from 'axios'; 
+
+import './Chatbot.css'; 
+
+ 
+ 
+
+const Chatbot = () => { 
+
+  const [input, setInput] = useState(''); 
+
+  const [messages, setMessages] = useState([]); 
+
+ 
+ 
+
+const chatWithGPT3 = async (userInput) => { 
+
+  const apiEndpoint = 'https://api.openai.com/v1/chat/completions'; // Replace with the correct API endpoint for your use case 
+
+    const headers = { 
+
+      'Content-Type': 'application/json', 
+
+      'Authorization': `Bearer YOUR_OPENAI_API_KEY` 
+
+    }; 
+
+ 
+ 
+
+    const data = { 
+
+      model: "gpt-3.5-turbo", 
+
+      messages: [ 
+
+        { 
+
+          role: 'system', 
+
+          content: 'You are a chatbot.' 
+
+        }, 
+
+        { 
+
+          role: 'user', 
+
+          content: userInput 
+
+        } 
+
+      ] 
+
+    }; 
+
+try { 
+
+      const response = await axios.post(apiEndpoint, data, { headers }); 
+
+      return response.data.choices[0].text.trim(); 
+
+    } catch (error) { 
+
+      console.error('Error communicating with the API:', error.message); 
+
+      return ''; 
+
+    } 
+
+  }; 
+
+  const handleSubmit = async (e) => { 
+
+    e.preventDefault(); 
+
+    if (!input.trim()) return; 
+
+    const userMessage = { text: input, user: true }; 
+
+    setMessages((prevMessages) => [...prevMessages, userMessage]); 
+
+    const aiMessage = { text: '...', user: false }; 
+
+    setMessages((prevMessages) => [...prevMessages, aiMessage]); 
+
+    const response = await chatWithGPT3(input); 
+
+    const newAiMessage = { text: response, user: false }; 
+
+    setMessages((prevMessages) => [...prevMessages.slice(0, -1), newAiMessage]); 
+
+    setInput(''); 
+
+  }; 
+
+  return ( 
+
+    <div className="chatbot-container"> 
+
+      
+
+      <div className="chatbot-messages"> 
+
+        {messages.map((message, index) => ( 
+
+          <div 
+
+            key={index} 
+
+            className={`message ${message.user ? 'user-message' : 'ai-message'}`} 
+
+          > 
+
+            {message.text} 
+
+          </div> 
+
+        ))} 
+
+      </div> 
+
+      <form className="chatbot-input-form" onSubmit={handleSubmit}> 
+
+        <input 
+
+          type="text" 
+
+          value={input} 
+
+          onChange={(e) => setInput(e.target.value)} 
+
+          placeholder="Type your message..." 
+
+        /> 
+
+        <button type="submit">Send</button> 
+
+      </form> 
+
+    </div> 
+
+  ); 
+
+}; 
+
+export default Chatbot; 
+
+ 
+ 
+
+———————————— 
+
+Create Chatbot.css in pages/ (directory) 
+
+ 
+ 
+
+/* Chatbot.css */ 
+
+ 
+ 
+
+.chatbot-container { 
+
+  width: 400px; 
+
+  margin: 0 auto; 
+
+  border: 1px solid #ccc; 
+
+  border-radius: 8px; 
+
+  padding: 16px; 
+
+  background-color: #f8f8f8; 
+
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+
+} 
+
+.chatbot-messages { 
+
+  height: 400px; 
+
+  overflow-y: scroll; 
+
+  padding: 8px; 
+
+} 
+
+.message { 
+
+  margin: 8px 0; 
+
+  padding: 8px; 
+
+  border-radius: 4px; 
+
+  font-size: 16px; 
+
+  line-height: 1.5; 
+
+} 
+
+.user-message { 
+
+  background-color: #007bff; 
+
+  color: #fff; 
+
+  text-align: right; 
+
+} 
+
+.ai-message { 
+
+  background-color: #f0f0f0; 
+
+  text-align: left; 
+
+} 
+
+.chatbot-input-form { 
+
+  display: flex; 
+
+  margin-top: 16px; 
+
+} 
+
+.chatbot-input-form input { 
+
+  flex: 1; 
+
+  padding: 8px; 
+
+  border: 1px solid #ccc; 
+
+  border-radius: 4px 0 0 4px; 
+
+  font-size: 16px; 
+
+} 
+
+.chatbot-input-form button { 
+
+  padding: 8px 16px; 
+
+  border: none; 
+
+  background-color: #007bff; 
+
+  color: #fff; 
+
+  border-radius: 0 4px 4px 0; 
+
+  font-size: 16px; 
+
+  cursor: pointer; 
+
+} 
+
+.chatbot-input-form button:hover { 
+
+  background-color: #0056b3; 
+
+} 
+
+ 
+ 
+
+————————— 
+
+In the pages/index.js 
+
+Add this line at the top 
+
+ 
+ 
+
+import Chatbot from './Chatbot'; 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+Day 3   
+
+ 
+
+ 
+
+ 
+Client-side game development  
+
+ 
+
+involves creating interactive and engaging games that run directly in web browsers.  
+
+ 
+
+ 
+
+ 
+
+Key aspects of this development process include: 
+
+ 
+
+Canvas and HTML5: Utilizing HTML5's <canvas> element for rendering game graphics and animations.  
+
+ 
+
+It provides a blank slate for creating custom game visuals. 
+
+ 
+
+JavaScript Frameworks: Leveraging JavaScript game development frameworks like Phaser or Three.js for smoother and more efficient game development. 
+
+ 
+
+User Input Handling: Implementing event listeners to capture user input (e.g., keyboard, mouse, or touch events) for controlling game elements and characters. 
+
+Physics and Collision Detection: Incorporating physics engines and collision detection algorithms to create realistic game interactions, including character movements, object collisions, and gravity. 
+
+Game Loop: Designing a game loop that manages game state updates, rendering, and controls, ensuring the game runs smoothly and consistently. 
+
+Scalability and Optimization: Ensuring that the game performs well on various devices and screen sizes by optimizing graphics, assets, and code for efficient resource management. 
+
+Multi-platform Compatibility: Developing games that can run on multiple web browsers and devices, ensuring broad accessibility. 
+
+Audio Integration: Adding audio effects and music to enhance the gaming experience using JavaScript libraries like Web Audio API. 
+
+Game Logic and AI: Implementing game logic and artificial intelligence to create challenges and interactive gameplay elements. 
+
+Debugging and Testing: Regularly testing and debugging the game to fix issues and ensure a bug-free gaming experience. 
+
+Overall, client-side game development in intermediate JavaScript requires a combination of programming skills, creativity, and an understanding of game design principles to deliver immersive and enjoyable web-based games. 
+
+ 
+
+ 
+
+Day 4 
+
+Displaying chat messages  
+
+ 
+
+in intermediate JavaScript typically involves creating a user interface for a chat application. Here's a small summary of key steps and concepts: 
+
+  
+
+1. **HTML Structure**: Design the HTML structure for displaying chat messages. Typically, this involves creating a chat container, message bubbles, and a form for sending new messages. 
+
+  
+
+2. **CSS Styling**: Apply CSS styles to format and style the chat messages. You can style message bubbles, user avatars, timestamps, and more to create an appealing chat interface. 
+
+  
+
+3. **JavaScript DOM Manipulation**: Use JavaScript to manipulate the Document Object Model (DOM) to add and display chat messages. You'll create functions to insert new messages into the chat container. 
+
+  
+
+4. **Data Storage**: Implement a data structure or use external data storage (e.g., a database) to store and manage chat messages. You may need to retrieve and display message history. 
+
+  
+
+5. **Real-time Updates (Optional)**: For real-time chat applications, implement mechanisms like WebSockets or server-sent events to instantly receive and display new messages without the need for manual refresh. 
+
+  
+
+6. **User Interactivity**: Allow users to input and send messages. Capture user input from the chat form, validate it, and send it to the server if required. 
+
+  
+
+7. **Message Formatting**: Format chat messages to include sender information, timestamps, and possibly avatars. You can use templates or JavaScript functions for consistent formatting. 
+
+  
+
+8. **Scrolling and Focus**: Manage the chat container's scroll position to ensure that the latest messages are visible. Optionally, automatically scroll to new messages. Set focus on the input field for a seamless user experience. 
+
+  
+
+9. **Emojis and Media (Optional)**: Enhance the chat interface by allowing users to send emojis, images, and other media. JavaScript can help manage these features. 
+
+  
+
+10. **Security**: Implement security measures to protect against vulnerabilities like cross-site scripting (XSS) when displaying user-generated content. 
+
+  
+
+11. **Localization (Optional)**: If the chat application is international, consider localization and provide support for multiple languages and date formats. 
+
+  
+
+12. **Error Handling**: Handle errors gracefully, such as failed message sending or retrieval from the server. 
+
+  
+
+13. **Testing**: Thoroughly test the chat interface to ensure that messages display correctly and that user interactions work as expected. 
+
+  
+
+14. **Responsiveness**: Make the chat interface responsive to different screen sizes and devices, ensuring it works well on both desktop and mobile. 
+
+  
+
+15. **Accessibility**: Ensure that the chat interface is accessible to users with disabilities, including keyboard navigation and screen reader support. 
+
+  
+
+Displaying chat messages involves a combination of HTML for structure, CSS for styling, and JavaScript for dynamic functionality. Depending on the complexity of your application, you may also use frameworks or libraries to simplify the process, such as React, Vue.js, or Socket.io for real-time communication. 
+
+ 
+
+ 
+
+ 
